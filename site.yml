@@ -1,0 +1,11 @@
+---
+# This playbook deploys a db server, a file server, and a web app server
+# It also adds monitors to all servers
+
+- name: apply common configuration to all nodes
+  hosts: all
+  remote_user: kevin
+  sudo: yes
+
+  roles:
+    - common 
