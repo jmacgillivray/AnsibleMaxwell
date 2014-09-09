@@ -22,3 +22,30 @@
 
 - name: Start the ntp service
   service: name=ntpd state=started enabled=true
+
+- name: Secure SSH installation
+  lineinfile: >
+    dest=/etc/ssh/sshd_config
+    backup={{item.backup}}
+    regexp="{{item.regexp}}"
+    line="{{item.line}}"
+    backrefs=true
+  with_items:
+    # On first loop of lineinfile, make a backup of the original system file.
+    # Don't allow root to login
+    - regexp: '^#PermitRootLogin'
+      backup: true
+      line: 'PermitRootLogin no'
+    # Reduce the grace time for logins
+    - regexp: '^#LoginGraceTime'
+      backup: false
+      line: 'LoginGraceTime 30'
+    # Don't allow password authentication
+    - regexp:  '^PasswordAuthentication yes'
+      backup: false
+      line: 'PasswordAuthentication no'
+    # Turn off GSSAPIAuthentication
+    - regexp: '^GSSAPIAuthentication yes'
+      backup: false
+      line: 'GSSAPIAuthentication no'
+  notify: restart sshd
