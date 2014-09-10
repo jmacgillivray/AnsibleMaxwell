@@ -5,11 +5,14 @@
   yum: name=munin-node state=present
 
 - name: Add cidr_allow to munin.conf file
-  lineinfile: dest=/etc/munin/munin-node.conf line="cidr_allow 192.168.77.0/24"
+  lineinfile: dest=/etc/munin/munin-node.conf line="allow ^192\.168\.77\.[1-9]{2,3}$"
 
 - name: Move service definition to firewalld etc
   copy: dest=/etc/firewalld/services/ owner=root mode=0440 src=../files/munin-node.xml
   notify: restart firewalld
+  
+- name: Force firewalld restart
+  meta: flush_handlers
 
 - name: Add munin-node exception to internal firewall zone
   firewalld: zone=internal service=munin-node permanent=true state=enabled 
