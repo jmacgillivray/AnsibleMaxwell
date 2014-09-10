@@ -4,7 +4,7 @@
 - name: Install minin-node
   yum: name=munin-node state=present
 
-- name: Add cidr_allow to munin.conf file
+- name: Add allow to munin.conf file
   lineinfile: dest=/etc/munin/munin-node.conf line="allow ^192\.168\.77\.[1-9]{2,3}$"
 
 - name: Move service definition to firewalld etc

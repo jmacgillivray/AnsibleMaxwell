@@ -9,3 +9,11 @@
   roles:
     - common 
 
+- name: create a munin master node
+  hosts: paloma
+  sudo: yes
+
+ 
+  roles:
+    - munin-master
+
