@@ -8,5 +8,15 @@
   yum: name=httpd state=present
 
 - name: Open http port in firewall for library subnet
-  firewalld: rich_rule='rule service name="http" source address="134.117.10.0/24" accept' permanent=true state=enabled zone=public
- 
+  firewalld: rich_rule='rule family="ipv4" service name="http" source address="134.117.10.0/24" accept' permanent=true state=enabled zone=public
+
+- name: Install passlib
+  yum: name=python-passlib state=present
+
+- name: Give munin a username/password 
+  htpasswd: path=/etc/munin/munin-htpasswd name=admin password=admin
+
+- name: Start the Apache httpd service
+  service: name=httpd state=started enabled=true
+
+
