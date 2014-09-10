@@ -1,0 +1,19 @@
+- name: Enable the epel-release repository
+  yum: name=epel-release state=present
+
+- name: Install minin-node
+  yum: name=munin-node state=present
+
+- name: Add cidr_allow to munin.conf file
+  lineinfile: dest=/etc/munin/munin-node.conf line="cidr_allow 192.168.77.0/24"
+
+- name: Move service definition to firewalld etc
+  copy: dest=/etc/firewalld/services/ owner=root mode=0440 src=../files/munin-node.xml
+  notify: restart firewalld
+
+- name: Add munin-node exception to internal firewall zone
+  firewalld: zone=internal service=munin-node permanent=true state=enabled 
+  notify: restart firewalld
+
+- name: Start the munin-node service
+  service: name=munin-node state=started enabled=true 

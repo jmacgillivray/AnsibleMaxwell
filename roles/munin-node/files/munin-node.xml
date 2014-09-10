@@ -1,0 +1,7 @@
+<service>
+  <short>Munin-Node</short>
+  <description>Add firewall rule for Munin.</description>
+  <port protocol="tcp" port="4949"/>
+  <port protocol="udp" port="4949"/>
+</service>
+

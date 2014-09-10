@@ -8,3 +8,10 @@
 
   roles:
     - common 
+
+- name: install munin monitor on nodes
+  hosts: munin-node
+  sudo: yes
+ 
+  roles: 
+    - munin-node
