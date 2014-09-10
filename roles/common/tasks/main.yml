@@ -1,51 +1,6 @@
 - name: Install vim
   yum: name=vim state=present
 
-- name: Install ntpd
-  yum: name=ntp state=present
-
-- name: Add NRC servers to ntp.conf
-  lineinfile: >
-    dest=/etc/ntp.conf
-    backup={{item.backup}}
-    regexp="{{item.regexp}}"
-    line="{{item.line}}"
-    insertbefore="^server 0.centos.pool.ntp.org iburst"
-  with_items:
-    - regexp: '^server time\.nrc\.ca iburst'
-      line: "server time.nrc.ca iburst"
-      backup: true 
-    - regexp: '^server time\.chu\.nrc\.ca iburst'
-      line: "server time.chu.nrc.ca iburst"
-      backup: false
-  notify: restart ntp
-
-- name: Start the ntp service
-  service: name=ntpd state=started enabled=true
-
-- name: Secure SSH installation
-  lineinfile: >
-    dest=/etc/ssh/sshd_config
-    backup={{item.backup}}
-    regexp="{{item.regexp}}"
-    line="{{item.line}}"
-    backrefs=true
-  with_items:
-    # On first loop of lineinfile, make a backup of the original system file.
-    # Don't allow root to login
-    - regexp: '^#PermitRootLogin'
-      backup: true
-      line: 'PermitRootLogin no'
-    # Reduce the grace time for logins
-    - regexp: '^#LoginGraceTime'
-      backup: false
-      line: 'LoginGraceTime 30'
-    # Don't allow password authentication
-    - regexp:  '^PasswordAuthentication yes'
-      backup: false
-      line: 'PasswordAuthentication no'
-    # Turn off GSSAPIAuthentication
-    - regexp: '^GSSAPIAuthentication yes'
-      backup: false
-      line: 'GSSAPIAuthentication no'
-  notify: restart sshd
+- include: ntpd.yml
+- include: harden_ssh.yml
+- include: munin_node.yml

@@ -8,7 +8,7 @@
   lineinfile: dest=/etc/munin/munin-node.conf line="allow ^192\.168\.77\.[1-9]{2,3}$"
 
 - name: Move service definition to firewalld etc
-  copy: dest=/etc/firewalld/services/ owner=root mode=0440 src=../files/munin-node.xml
+  copy: dest=/etc/firewalld/services/ owner=root mode=0440 src=munin-node.xml
   notify: restart firewalld
   
 - name: Force firewalld restart

@@ -1,0 +1,12 @@
+- name: Enable the epel-release repository
+  yum: name=epel-release state=present
+
+- name: Install munin
+  yum: name=munin state=present
+
+- name: Install httpd
+  yum: name=httpd state=present
+
+- name: Open http port in firewall for library subnet
+  firewalld: rich_rule='rule service name="http" source address="134.117.10.0/24" accept' permanent=true state=enabled zone=public
+ 

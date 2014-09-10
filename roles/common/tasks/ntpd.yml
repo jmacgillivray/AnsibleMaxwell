@@ -1,0 +1,22 @@
+- name: Install ntpd
+  yum: name=ntp state=present
+
+- name: Add NRC servers to ntp.conf
+  lineinfile: >
+    dest=/etc/ntp.conf
+    backup={{item.backup}}
+    regexp="{{item.regexp}}"
+    line="{{item.line}}"
+    insertbefore="^server 0.centos.pool.ntp.org iburst"
+  with_items:
+    - regexp: '^server time\.nrc\.ca iburst'
+      line: "server time.nrc.ca iburst"
+      backup: true
+    - regexp: '^server time\.chu\.nrc\.ca iburst'
+      line: "server time.chu.nrc.ca iburst"
+      backup: false
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=true
+
